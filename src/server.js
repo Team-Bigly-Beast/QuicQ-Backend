@@ -10,8 +10,10 @@ const querystring = require("querystring");
 const cors = require("cors");
 
 const User = require('./user.js');
+const Room = require('./room.js');
 
 const userMap = new Map;
+const roomMap = new Map;
 
 const app = express(); // init express router and assign it to variable app
 
@@ -52,6 +54,31 @@ function generateRandomString(length) {
     return text;
 }
 
+app.post("/room", function (req, res) {
+    
+    const data = { 'username': req.cookies['username'], 'access_token': req.cookies['access_token'] }
+    
+    if (userMap.has(data.access_token))
+    {
+        const id = generateRandomString(6);
+        roomMap.set(id, new Room(id, userMap.get(data.access_token)));
+        res.end(`/room@${id}`);
+    }
+    else
+    {
+        res.status(400).end("User unable to start a room :(");
+    }
+
+});
+
+app.get("/room@:id", function (req, res) {
+    if (roomMap.has(req.params.id)) {
+        res.sendFile("room.html", { root: wwwRoot });
+    }
+    else {
+        res.redirect('/');
+    }
+});
 
 app.get('/user', function (req, res) {
     // console.log(req.cookies)
@@ -61,7 +88,7 @@ app.get('/user', function (req, res) {
         res.cookie("profile_picture", userMap.get(accessToken).getImage());
         res.cookie("username", userMap.get(accessToken).getUserName());
 
-        res.sendFile("room.html", { root: wwwRoot });
+        res.sendFile("join.html", { root: wwwRoot });
     }
     else
     {
@@ -85,7 +112,8 @@ app.get('/login', function (req, res) {
             scope: scope,
             redirect_uri: redirect_uri,
             state: state
-        }));
+        })
+    );
 });
 
 app.get('/callback', function (req, res) {

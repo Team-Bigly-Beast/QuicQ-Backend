@@ -3,50 +3,54 @@
         <title>QuikQ</title>
         <link href="assets/css/style.css" rel="stylesheet" type="text/css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="assets/js/scrollify/main.js"></script>
-
+        <script src="assets/js/main.js"></script>
 
         <script>
             function promptRoom(){
-                var roomID = prompt("Please enter the room ID below:");
+                var roomPass = prompt("Enter A Room Password");
 
-                if (roomID != null) {
-                    alert("Room ID: " + roomID)
-
-
-                // document.getElementById("demo").innerHTML =
-                // "Hello " + roomID + "! How are you today?";
+                if (roomPass != null) {
+                    //alert("Room ID: " + roomID)
+                    $.ajax({
+                        type: "POST",
+                        url: '/room',
+                        data: { "roomPassword": roomPass },
+                        success: function (data) { window.location.href = window.location.origin + data; },
+                        error: function (data) { alert("Failed to create Room! Check Console for details..."); console.log(data.responseText); }
+                    });
                 }
             }
 
-            user = getCookie(username);
-            userPic = getCookie();
-
+            $(document).ready(function () {
+                $("#username").text(getCookie("username"));
+                $("#pic").attr('src', getCookie('profile_picture'));
+            });
+            
         </script>
     </head>
 
-</body>
-<div class="fadeIn">
-    <div class="row">
-        <div class="logo">
-            <h3>QuikQ</h3>
+<body>
+    <div class="fadeIn">
+        <div class="row">
+            <div class="logo">
+                <h3>QuikQ</h3>
+            </div>
         </div>
-    </div>
-    
-    <div class="container">
-        <div class="wrap">
-            <div class="profPic">
-                <img id="pic" alt="profile" src="assets/img/1.jpg">
-                <h3 id="username">user</h3>
-                <div>
-                    <a href="landing.html"><button id="btnJoin">Create a Room</button></a>
-                    <div class="divider"></div>
-                    <button id="btnCreate" onclick="promptRoom();">Join a Room</button>
+        
+        <div class="container">
+            <div class="wrap">
+                <div class="profPic">
+                    <img id="pic" alt="profile" src="assets/img/1.jpg">
+                    <h3 id="username">user</h3>
+                    <div>
+                        <button id="btnCreate" onclick="promptRoom();">Create a Room</button>
+                        <div class="divider"></div>
+                        <button id="btnJoin" onclick="">Join a Room</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
 </body>
 
