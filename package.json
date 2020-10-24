@@ -1,0 +1,19 @@
+{
+  "name": "quicq-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "build/server.js",
+  "private":"true",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "gulp"
+  },
+  "author": "Dean Sellas, Dean Tasi, Dennis P",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "gulp": "^4.0.2"
+  }
+}
