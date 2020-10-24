@@ -5,6 +5,7 @@
   "main": "build/server.js",
   "private": "true",
   "scripts": {
+    "start": "node .",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node -r dotenv/config src/server.js",
     "build": "gulp"
