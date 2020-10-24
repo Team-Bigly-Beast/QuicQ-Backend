@@ -1,0 +1,49 @@
+<html>
+    <head>
+        <title>QuikQ</title>
+        <link href="assets/css/style.css" rel="stylesheet" type="text/css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="assets/js/scrollify/main.js"></script>
+
+
+        <script>
+            function promptRoom(){
+                var roomID = prompt("Please enter the room ID below:");
+
+                if (roomID != null) {
+                    alert("Room ID: " + roomID)
+
+
+                // document.getElementById("demo").innerHTML =
+                // "Hello " + roomID + "! How are you today?";
+                }
+            }
+        </script>
+    </head>
+
+</body>
+<div class="fadeIn">
+    <div class="row">
+        <div class="logo">
+            <h3>QuikQ</h3>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="wrap">
+            <div class="profPic">
+                <img id="pic" alt="profile" src="assets/img/1.jpg">
+                <h3 id="username">user</h3>
+                <div>
+                    <a href="landing.html"><button id="btnJoin">Create a Room</button></a>
+                    <div class="divider"></div>
+                    <button id="btnCreate" onclick="promptRoom();">Join a Room</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>
