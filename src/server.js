@@ -9,6 +9,9 @@ const cookieParser = require("cookie-parser");
 const querystring = require("querystring");
 const cors = require("cors");
 
+const User = require('./user.js');
+
+const userMap = new Map;
 
 const app = express(); // init express router and assign it to variable app
 
@@ -32,6 +35,7 @@ const sessionParser = session({
     secret: generateRandomString(5),
     resave: false
 });
+
 app.use(express.urlencoded());
 app.use(sessionParser);
 
@@ -47,6 +51,25 @@ function generateRandomString(length) {
     }
     return text;
 }
+
+
+app.get('/user', function (req, res) {
+    // console.log(req.cookies)
+    var accessToken = req.cookies ? req.cookies['access_token'] : null;
+    if (userMap.has(accessToken))
+    {
+        res.cookie("profile_picture", userMap.get(accessToken).getImage());
+        res.cookie("username", userMap.get(accessToken).getUserName());
+
+        res.sendFile("room.html", { root: wwwRoot });
+    }
+    else
+    {
+        res.redirect('/');
+        return;
+    }
+    
+});
 
 app.get('/login', function (req, res) {
 
@@ -78,8 +101,10 @@ app.get('/callback', function (req, res) {
         res.redirect('/#' +
             querystring.stringify({
                 error: 'state_mismatch'
-            }));
-    } else {
+            })
+        );
+    }
+    else {
         res.clearCookie(stateKey);
         var authOptions = {
             url: 'https://accounts.spotify.com/api/token',
@@ -105,19 +130,24 @@ app.get('/callback', function (req, res) {
                     headers: { 'Authorization': 'Bearer ' + access_token },
                     json: true
                 };
-
+                res.cookie("access_token", access_token);
+                res.cookie("refresh_token", refresh_token);
                 // use the access token to access the Spotify Web API
                 request.get(options, function (error, response, body) {
-                    console.log(body);
+                    console.log(`Logged in user`);
+                    console.log(body)
+                    userMap.set(access_token, new User(body, access_token));
+                    res.redirect('/user');
                 });
 
                 // we can also pass the token to the browser to make requests from there
-                res.redirect('/');
-            } else {
-                res.redirect('/#' +
+            }
+            else {
+                res.redirect('/' +
                     querystring.stringify({
                         error: 'invalid_token'
-                    }));
+                    })
+                );
             }
         });
     }
