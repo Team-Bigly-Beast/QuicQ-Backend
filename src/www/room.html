@@ -28,16 +28,14 @@
 <body>
     <div class="fadeIn">
 
-        <h1>Spotify Song Queuer</h1>
+        <h1>QuikQ Room</h1>
         <h4>Room ID: </h4>
-        <h4>Host:</h4>
+        <h4>Password:</h4>
 
-            <div class="form-group">
-                <label for="uri">Song URI:</label>
-                <div>
-                </div>
-                <input type="text" class="form-control" id="uri" maxlength="20">
-            </div>
+        <div class="form__group field">
+            <input type="input" class="form__field" placeholder="Enter Song URI" name="name" id='name' required />
+          </div>
+
         <br>
         
         <div class="container">
@@ -48,60 +46,6 @@
                 </div>
             </div>
 
-
-	<script>
-        
-    $(document).ready(function () {
-        const rID = window.location.pathname.split('@')[1];
-        $("#btnCreate").click(function () {
-            var songID = $("#uri").val();
-            console.log(songID);
-            deviceID = '';
-            // console.log(oAuth);
-            $.ajax({
-                type: "POST",
-                url: '/addSong',
-                data: {roomID: rID, song: songID },
-                success: function( data ) { console.log("Added Song To Queue!"); },
-                error: function (data) { console.error("POST Request Failed!"); }
-            });
-        });
-    });
-        
-    </script>
-</body>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-	<script>
-        
-    $(document).ready(function () {
-        const rID = window.location.pathname.split('@')[1];
-        $("#btnCreate").click(function () {
-            var songID = $("#uri").val();
-            console.log(songID);
-            deviceID = '';
-            // console.log(oAuth);
-            $.ajax({
-                type: "POST",
-                url: '/addSong',
-                data: {roomID: rID, song: songID },
-                success: function( data ) { console.log("Added Song To Queue!"); },
-                error: function (data) { console.error("POST Request Failed!"); }
-            });
-        });
-    });
-        
-    </script>
-</body>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
 	<script>
         
