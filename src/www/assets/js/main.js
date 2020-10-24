@@ -1,13 +1,3 @@
-$(function(){
-  $.scrollify({
-    section: ".panel",
-    scrollSpeed: 2000,
-    offset : 0,
-    scrollbars: false,
-  });
-
-});
-
 function getCookie(cname) {
   var name = cname + "=";
   var decodedCookie = decodeURIComponent(document.cookie);
