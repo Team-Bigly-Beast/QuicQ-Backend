@@ -1,0 +1,73 @@
+<html>
+    <head>
+        <title>QuikQ</title>
+        <link href="assets/css/style.css" rel="stylesheet" type="text/css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="assets/js/main.js"></script>
+
+        <script>
+            function promptRoom(){
+                const roomPass = prompt("Enter A Room Password");
+
+                if (roomPass != null) {
+                    //alert("Room ID: " + roomID)
+                    $.ajax({
+                        type: "POST",
+                        url: '/room',
+                        data: { "room_pass": roomPass },
+                        success: function (data) { window.location.href = window.location.origin + data; },
+                        error: function (data) { alert("Failed to create Room! Check Console for details..."); console.log(data.responseText); }
+                    });
+                }
+            }
+
+            function joinRoom() {
+                const roomID = prompt("Enter a Room ID");
+                if(roomID !== null && roomID !== ""){
+                    const roomPass = prompt("Enter A Room Password");
+                    if(roomPass !== null && roomPass !== "") {
+                        $.ajax({
+                            type: "POST",
+                            url: '/joinRoom',
+                            data: { "room_id": roomID, "room_pass": roomPass },
+                            success: function (data) { window.location.href = window.location.origin + data; },
+                            error: function (data) { alert("Failed to Join Room! Check Console for details..."); console.log(data.responseText); }
+                        });
+                    }
+                }
+            }
+
+            $(document).ready(function () {
+                $("#username").text(getCookie("username"));
+                $("#pic").attr('src', getCookie('profile_picture'));
+            });
+            
+        </script>
+    </head>
+
+<body>
+    <div class="fadeIn">
+        <div class="row">
+            <div class="logo">
+                <h3>QuikQ</h3>
+            </div>
+        </div>
+        
+        <div class="container">
+            <div class="wrap">
+                <div class="profPic">
+                    <img id="pic" alt="profile" src="assets/img/1.jpg">
+                    <h3 id="username">user</h3>
+                    <div>
+                        <button id="btnCreate" onclick="promptRoom();">Create a Room</button>
+                        <div class="divider"></div>
+                        <button id="btnJoin" onclick="joinRoom();">Join a Room</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

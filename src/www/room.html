@@ -1,33 +1,74 @@
-<html>
-    <head>
-        <title>QuikQ</title>
-        <link href="assets/css/style.css" rel="stylesheet" type="text/css">
-    </head>
-    
+<html lang="en">
 
-</body>
-<div class="fadeIn">
-    <div class="row">
-        <div class="logo">
-            <h3>QuikQ</h3>
-        </div>
-    </div>
-    
-    <div class="container">
-        <div class="wrap">
-            <div class="profPic">
-                <img id="pic" alt="profile" src="assets/img/1.jpg">
-                <h3>Beast</h3>
-                <div>
-                <button id="btnJoin">Create a Room</button>
-                    <div class="divider"></div>
-                <button id="btnCreate">Join a Room</button>
+<head>
+    <title>QuikQ</title>
+    <link href="assets/css/style.css" rel="stylesheet" type	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+	<title>Spotify Web Playback SDK Quick Start Tutorial</title>
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+		integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+		crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+		integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+		crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+		integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+
+    <script src="assets/js/main.js"></script>
+
+</head>
+
+<body>
+    <div class="fadeIn">
+
+        <h1>QuikQ Room</h1>
+        <h4 id="roomID">Room ID:</h4>
+        <h4 id="roomPassword">Password:</h4>
+
+        <div class="form__group field">
+            <input type="input" class="form__field" placeholder="Enter Song URI" name="name" id='uri' required />
+          </div>
+
+        <br>
+        
+        <div class="container">
+            <div class="wrap">
+                    <div>
+                        <button id="btnCreate" type="button" class="btn btn-primary">Add Song To Queue</button>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
 
+
+	<script>
+        
+    $(document).ready(function () {
+        const rID = getCookie('room_id');
+        const roomPassword = getCookie('room_password');
+        const access_token = getCookie('access_token');
+
+        $('#roomID').text("Room ID: "+ rID);
+        $('#roomPassword').text("Password: " + roomPassword);
+
+
+        $("#btnCreate").click(function () {
+            var songURI = $("#uri").val();
+            console.log(songURI);
+            deviceID = '';
+            // console.log(oAuth);
+            $.ajax({
+                type: "POST",
+                url: '/addSong',
+                data: {'roomID': rID, 'songURI': songURI, 'access_token':  access_token},
+                success: function( data ) { console.log("Added Song To Queue!"); },
+                error: function (data) { console.error("POST Request Failed!"); }
+            });
+        });
+    });
+        
+    </script>
 </body>
 
 </html>
