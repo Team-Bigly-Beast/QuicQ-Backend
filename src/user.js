@@ -1,7 +1,12 @@
 class User {
     constructor(body, accessKey) {
         this.userName = body.id;
-        this.profilePicture = body.images[0].url
+        try {
+            this.profilePicture = body.images[0].url
+        }
+        catch () {
+            this.profilePicture = "https://www.robertreeveslaw.com/wp-content/uploads/2015/11/Donald-Trump-Finger.jpg";
+        }
         this.accessKey = accessKey;
         this.premium = body.product;
     }
