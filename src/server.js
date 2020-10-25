@@ -22,14 +22,22 @@ const app = express(); // init express router and assign it to variable app
 const client_id = env.CLIENT_ID; // Your client id
 const client_secret = env.CLIENT_SECRET; // Your secret
 const redirect_uri = env.REDIRECT_URI
-const scopes = env.SCOPES;
+const scope = env.SCOPES;
 const stateKey = 'spotify_auth_state';
 
 console.log(redirect_uri)
 // assigns wwwRoot to correct location
 const wwwRoot = (env.NODE_ENV == "development") ? "src/www" : "build/www"
-app.use(express.static(wwwRoot)).use(cors()).use(cookieParser());// tell app to use index.html at build/www
 app.use(cookieParser()); 
+
+
+app.get('/', function (req, res) {
+    res.clearCookie("room_id");
+    res.clearCookie("room_pass");
+    res.sendFile('index.html', { root: wwwRoot });
+});
+
+app.use(express.static(wwwRoot)).use(cors()).use(cookieParser());// tell app to use index.html at build/www
 
 
 const sessionParser = session({
@@ -56,23 +64,42 @@ function generateRandomString(length) {
 
 app.post("/room", function (req, res) {
     
-    const data = { 'username': req.cookies['username'], 'access_token': req.cookies['access_token'] }
-    
-    if (userMap.has(data.access_token))
-    {
+    const access_token = req.cookies['access_token']
+    if (userMap.has(access_token)) {
         const id = generateRandomString(6);
-        roomMap.set(id, new Room(id, userMap.get(data.access_token)));
+        const pass = (req.body.room_pass !== "") ? req.body.room_pass : generateRandomString(6)
+        roomMap.set(id, new Room(id, pass, userMap.get(access_token)));
         res.end(`/room@${id}`);
     }
-    else
-    {
+    else {
         res.status(400).end("User unable to start a room :(");
     }
 
 });
 
+app.post('/joinRoom', function (req, res) {
+    const data = req.body;
+    console.log(req.body)
+    if (roomMap.has(data.room_id)) {
+        const room = roomMap.get(data.room_id);
+        if (data.room_pass === room.getRoomPassword()) {
+            room.addUser(req.cookies['access_token']);
+            res.end(`/room@${data.room_id}`)
+        }
+        else {
+            res.status(401).end("Bad Password!")
+        }
+    }
+    else {
+        res.status(404).end("Room Not Found")
+    }
+});
+
 app.get("/room@:id", function (req, res) {
     if (roomMap.has(req.params.id)) {
+        const room = roomMap.get(req.params.id);
+        res.cookie("room_id", room.getRoomID());
+        res.cookie("room_password", room.getRoomPassword());
         res.sendFile("room.html", { root: wwwRoot });
     }
     else {
@@ -80,18 +107,48 @@ app.get("/room@:id", function (req, res) {
     }
 });
 
+app.post('/addSong', function (req, res) {
+    const data = req.body;
+    if (roomMap.has(data.roomID)) {
+        const room = roomMap.get(data.roomID);
+        if (room.getUser(data.access_token)) {
+            const owner = room.getOwner();
+            const auth = {
+                url: `https://api.spotify.com/v1/me/player/queue?uri=${data.songURI}`,
+                type: 'POST',
+                data: { device_id: "", },
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': "application/json",
+                    //If your header name has spaces or any other char not appropriate
+                    Authorization: `Bearer ${owner.getAccessKey()}`
+                    //for object property name, use quoted notation shown in second
+                },
+                dataType: 'json',
+                success: function (data) {
+                    console.log(`Song Added To Queue: ${data.song}`);
+                }
+            }
+            console.log(auth);
+            request.post(auth, (error, response, body) => {
+                res.statusCode = response.statusCode;
+                res.send();
+            });
+        }
+    }
+});
+
+
 app.get('/user', function (req, res) {
     // console.log(req.cookies)
     var accessToken = req.cookies ? req.cookies['access_token'] : null;
-    if (userMap.has(accessToken))
-    {
+    if (userMap.has(accessToken)) {
         res.cookie("profile_picture", userMap.get(accessToken).getImage());
         res.cookie("username", userMap.get(accessToken).getUserName());
 
         res.sendFile("join.html", { root: wwwRoot });
     }
-    else
-    {
+    else {
         res.redirect('/');
         return;
     }
@@ -104,7 +161,6 @@ app.get('/login', function (req, res) {
     res.cookie(stateKey, state);
 
     // your application requests authorization
-    var scope = 'user-read-private user-read-email';
     res.redirect('https://accounts.spotify.com/authorize?' +
         querystring.stringify({
             response_type: 'code',

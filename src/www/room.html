@@ -15,13 +15,8 @@
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
 		integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
-        
-    <script>
-        function addSong{
-            var songURI = ""
-            alert(songURI)
-        }
-    </script>
+
+    <script src="assets/js/main.js"></script>
 
 </head>
 
@@ -29,11 +24,11 @@
     <div class="fadeIn">
 
         <h1>QuikQ Room</h1>
-        <h4>Room ID: </h4>
-        <h4>Password:</h4>
+        <h4 id="roomID">Room ID:</h4>
+        <h4 id="roomPassword">Password:</h4>
 
         <div class="form__group field">
-            <input type="input" class="form__field" placeholder="Enter Song URI" name="name" id='name' required />
+            <input type="input" class="form__field" placeholder="Enter Song URI" name="name" id='uri' required />
           </div>
 
         <br>
@@ -41,7 +36,7 @@
         <div class="container">
             <div class="wrap">
                     <div>
-                        <button id="btnCreate" type="button" class="btn btn-primary" onclick="addSong();">Add Song To Queue</button>
+                        <button id="btnCreate" type="button" class="btn btn-primary">Add Song To Queue</button>
                     </div>
                 </div>
             </div>
@@ -50,16 +45,23 @@
 	<script>
         
     $(document).ready(function () {
-        const rID = window.location.pathname.split('@')[1];
+        const rID = getCookie('room_id');
+        const roomPassword = getCookie('room_password');
+        const access_token = getCookie('access_token');
+
+        $('#roomID').text("Room ID: "+ rID);
+        $('#roomPassword').text("Password: " + roomPassword);
+
+
         $("#btnCreate").click(function () {
-            var songID = $("#uri").val();
-            console.log(songID);
+            var songURI = $("#uri").val();
+            console.log(songURI);
             deviceID = '';
             // console.log(oAuth);
             $.ajax({
                 type: "POST",
                 url: '/addSong',
-                data: {roomID: rID, song: songID },
+                data: {'roomID': rID, 'songURI': songURI, 'access_token':  access_token},
                 success: function( data ) { console.log("Added Song To Queue!"); },
                 error: function (data) { console.error("POST Request Failed!"); }
             });

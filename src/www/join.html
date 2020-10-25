@@ -7,17 +7,33 @@
 
         <script>
             function promptRoom(){
-                var roomPass = prompt("Enter A Room Password");
+                const roomPass = prompt("Enter A Room Password");
 
                 if (roomPass != null) {
                     //alert("Room ID: " + roomID)
                     $.ajax({
                         type: "POST",
                         url: '/room',
-                        data: { "roomPassword": roomPass },
+                        data: { "room_pass": roomPass },
                         success: function (data) { window.location.href = window.location.origin + data; },
                         error: function (data) { alert("Failed to create Room! Check Console for details..."); console.log(data.responseText); }
                     });
+                }
+            }
+
+            function joinRoom() {
+                const roomID = prompt("Enter a Room ID");
+                if(roomID !== null && roomID !== ""){
+                    const roomPass = prompt("Enter A Room Password");
+                    if(roomPass !== null && roomPass !== "") {
+                        $.ajax({
+                            type: "POST",
+                            url: '/joinRoom',
+                            data: { "room_id": roomID, "room_pass": roomPass },
+                            success: function (data) { window.location.href = window.location.origin + data; },
+                            error: function (data) { alert("Failed to Join Room! Check Console for details..."); console.log(data.responseText); }
+                        });
+                    }
                 }
             }
 
@@ -45,7 +61,7 @@
                     <div>
                         <button id="btnCreate" onclick="promptRoom();">Create a Room</button>
                         <div class="divider"></div>
-                        <button id="btnJoin" onclick="">Join a Room</button>
+                        <button id="btnJoin" onclick="joinRoom();">Join a Room</button>
                     </div>
                 </div>
             </div>

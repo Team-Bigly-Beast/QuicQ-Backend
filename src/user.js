@@ -7,6 +7,7 @@ class User {
     }
     getImage() { return this.profilePicture; }
     getUserName() { return this.userName; }
+    getAccessKey() { return this.accessKey; }
     isPremium() { return this.premium }
 }
 
