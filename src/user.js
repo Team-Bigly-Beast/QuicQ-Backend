@@ -4,7 +4,7 @@ class User {
         try {
             this.profilePicture = body.images[0].url
         }
-        catch () {
+        catch (error) {
             this.profilePicture = "https://www.robertreeveslaw.com/wp-content/uploads/2015/11/Donald-Trump-Finger.jpg";
         }
         this.accessKey = accessKey;
