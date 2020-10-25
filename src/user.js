@@ -5,7 +5,7 @@ class User {
             this.profilePicture = body.images[0].url
         }
         catch (error) {
-            this.profilePicture = "https://www.robertreeveslaw.com/wp-content/uploads/2015/11/Donald-Trump-Finger.jpg";
+            this.profilePicture = "assets/img/unit.jpg";
         }
         this.accessKey = accessKey;
         this.premium = body.product;
