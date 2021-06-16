@@ -1,4 +1,8 @@
-class User {
+export default class User {
+    userName: String;
+    profilePicture: String;
+    accessKey: String;
+    premium: boolean;
     constructor(body, accessKey) {
         this.userName = body.id;
         try {
@@ -15,5 +19,3 @@ class User {
     getAccessKey() { return this.accessKey; }
     isPremium() { return this.premium }
 }
-
-module.exports= User

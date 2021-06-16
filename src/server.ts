@@ -9,8 +9,8 @@ const cookieParser = require("cookie-parser");
 const querystring = require("querystring");
 const cors = require("cors");
 
-const User = require('./user.js');
-const Room = require('./room.js');
+import User from "./user";
+import Room from "./room";
 
 const userMap = new Map;
 const roomMap = new Map;
@@ -23,12 +23,12 @@ const client_id = env.CLIENT_ID; // Your client id
 const client_secret = env.CLIENT_SECRET; // Your secret
 const redirect_uri = env.REDIRECT_URI
 const scope = env.SCOPES;
-const stateKey = 'spotify_auth_state';
+const stateKey = env.STATE_KEY;
 
 console.log(redirect_uri)
 // assigns wwwRoot to correct location
 const wwwRoot = (env.NODE_ENV == "development") ? "src/www" : "build/www"
-app.use(cookieParser()); 
+app.use(cookieParser());
 
 
 app.get('/', function (req, res) {
@@ -91,7 +91,7 @@ app.post('/joinRoom', function (req, res) {
         }
     }
     else {
-        res.status(404).end("Room Not Found")
+        res.sttaus(404).end("Room Not Found")
     }
 });
 
@@ -198,7 +198,7 @@ app.get('/callback', function (req, res) {
                 grant_type: 'authorization_code'
             },
             headers: {
-                'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
+                'Authorization': 'Basic ' + (Buffer.from(client_id + ':' + client_secret).toString('base64'))
             },
             json: true
         };

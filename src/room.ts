@@ -1,6 +1,12 @@
-const User = require('./user.js')
+import User from "./user"
 
-class Room {
+export default class Room {
+
+    id: String;
+    owner: User;
+    password: String;
+    userList: Map<String, User>;
+
     constructor(id, pass, owner) {
         this.id = id;
         this.owner = owner;
@@ -15,9 +21,7 @@ class Room {
         this.userList.set(user, user);
     }
     getUser(access_token) { return this.userList.has(access_token); }
-    getOwner() { return this.owner; }
-    getRoomID() { return this.id; }
-    getRoomPassword() { return this.password; }
+    getOwner(): User { return this.owner; }
+    getRoomID(): String { return this.id; }
+    getRoomPassword(): String { return this.password; }
 }
-
-module.exports = Room;
